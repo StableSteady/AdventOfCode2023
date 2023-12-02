@@ -26,8 +26,8 @@ int main() {
 		for (const auto& game : line | std::views::split(std::string(": ")) | std::views::drop(1)) {
 			bool validGame = true;
 			for (const auto& set : game | std::views::split(std::string("; "))) {
-				auto color = set | std::views::split(std::string(", "));
-				if (std::ranges::any_of(color, notPossible)) {
+				auto colors = set | std::views::split(std::string(", "));
+				if (std::ranges::any_of(colors, notPossible)) {
 					validGame = false;
 					break;
 				}
