@@ -2,12 +2,10 @@
 #include <fstream>
 #include <iostream>
 #include <ranges>
-#include <sstream>
 #include <string>
 #include <string_view>
 #include <unordered_map>
 #include <utility>
-#include <vector>
 
 auto notPossible = [](const auto& _color) {
 	static std::unordered_map<std::string, int> maxCubes{ {"red", 12}, {"green", 13}, {"blue", 14} };

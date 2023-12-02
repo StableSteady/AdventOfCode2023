@@ -2,12 +2,10 @@
 #include <fstream>
 #include <iostream>
 #include <ranges>
-#include <sstream>
 #include <string>
 #include <string_view>
 #include <unordered_map>
 #include <utility>
-#include <vector>
 
 int main() {
 	std::fstream input("input.txt");
