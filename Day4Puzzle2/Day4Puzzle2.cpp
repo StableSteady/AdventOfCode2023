@@ -28,8 +28,7 @@ int main() {
 		cardCount.push_back(1);
 		auto cards = (line | std::views::split(std::string(": ")) | std::views::drop(1)).front() | std::views::split(std::string(" | ")) | std::ranges::to<std::vector>();
 		std::unordered_map<int, bool> isWinning;
-		for (int num : cards.front() | std::views::split(std::string(" ")) | std::views::filter(notEmpty) | std::views::transform(toInt)) 
-		{
+		for (int num : cards.front() | std::views::split(std::string(" ")) | std::views::filter(notEmpty) | std::views::transform(toInt)) {
 			isWinning[num] = true;
 		}
 		for (int num : cards.back() | std::views::split(std::string(" ")) | std::views::filter(notEmpty) | std::views::transform(toInt)) {
