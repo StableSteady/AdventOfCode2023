@@ -2,8 +2,8 @@
 #include <fstream>
 #include <iostream>
 #include <iterator>
-#include <map>
 #include <ranges>
+#include <set>
 #include <string>
 #include <string_view>
 #include <utility>
@@ -20,34 +20,22 @@ int main() {
 	std::ifstream input("input.txt");
 	std::string line;
 	std::getline(input, line);
-	auto seeds = (line | std::views::split(std::string(": ")) | std::views::drop(1)).front() | std::views::split(std::string(" ")) | std::views::transform(toLongLong) | std::ranges::to<std::vector>();
+	auto source = (line | std::views::split(std::string(": ")) | std::views::drop(1)).front() | std::views::split(std::string(" ")) | std::views::transform(toLongLong) | std::ranges::to<std::set>();
+	std::set<long long> destination;
 	std::getline(input, line); // skip empty line
-	std::map<long long, std::pair<long long, long long>> sourceToDestination; // first = destination, second = length
-	while (std::getline(input, line)) {
-		if (line.find(':') != std::string::npos) {
-			sourceToDestination.clear();
-			continue;
+	while (std::getline(input, line) or input.eof()) {
+		if (std::ranges::contains(line, ':') or line.empty() or input.eof()) {
+			std::ranges::move(source, std::inserter(destination, destination.begin()));
+			std::swap(source, destination);
+			destination.clear();
+			if (input.eof()) break; else continue;
 		}
-		if (line.empty()) {
-			for (long long& seed : seeds) {
-				auto it = sourceToDestination.upper_bound(seed);
-				if (it == sourceToDestination.begin())
-					continue;
-				--it;
-				if (long long delta = seed - (*it).first; delta >= (*it).second.second) {
-					continue;
-				} else {
-					seed = (*it).second.first + delta;
-				}
-			}
-			if (input.eof())
-				break;
-			else
-				continue;
-		}
-		const auto& [destination, source, length] = (line | std::views::split(std::string(" ")) | std::views::transform(toLongLong) | std::views::adjacent<3>).front();
-		sourceToDestination[source] = { destination, length };
-		line.clear();
+		const auto& [destinationStart, sourceStart, length] = (line | std::views::split(std::string(" ")) | std::views::transform(toLongLong) | std::views::adjacent<3>).front();
+		auto toDestination = [destinationStart, sourceStart](long long source) {
+			return source + (destinationStart - sourceStart);
+			};
+		std::ranges::transform(source.lower_bound(sourceStart), source.lower_bound(sourceStart + length), std::inserter(destination, destination.begin()), toDestination);
+		source.erase(source.lower_bound(sourceStart), source.lower_bound(sourceStart + length));
 	}
-	std::cout << *std::min_element(seeds.begin(), seeds.end());
+	std::cout << *source.begin();
 }
